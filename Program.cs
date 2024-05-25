@@ -12,12 +12,9 @@ namespace Better_BelieveIt_Bot {
             IConfigurationRoot configuration = configurationBuilder.Build();
 
             string token = configuration["BotToken"];
-            Console.WriteLine(token);
-
-
-            //string token = Environment.GetEnvironmentVariable("BOT_TOKEN");
             if (string.IsNullOrWhiteSpace(token)) {
-                Console.WriteLine("Error: No discord token found. Please provide a token via the DISCORD_TOKEN environment variable.");
+                string timestamp = await GetCurrentTimestamp();
+                Console.WriteLine($"[{timestamp}] Error: No discord token found. Please provide a token via the Secret Manager/User Secrets.");
                 Environment.Exit(1);
             }
 
@@ -30,10 +27,9 @@ namespace Better_BelieveIt_Bot {
             // Events
             _client.Log += Log;
             _client.MessageUpdated += MessageUpdated;
-            _client.Ready += () => {
-                var timestamp = GetCurrentTimestamp();
-                Console.WriteLine($"[{timestamp}] Better-BelieveIt-Bot is connected and Ready!,\nBelieve it!");
-                return Task.CompletedTask;
+            _client.Ready += async () => {
+                string timestamp = await GetCurrentTimestamp();
+                Console.WriteLine($"[{timestamp}] Better-BelieveIt-Bot is connected and Ready, Believe it!");
             };
 
             await Task.Delay(-1);
