@@ -5,6 +5,12 @@ Hello!
 
 This is a WIP Discord bot that I'm making for myself and friends. 
 
+## Current Bot Features
+
+I will attempt to update this as new features are added.
+
+- It will show up as online in your server (wow, crazy!)
+
 ## Planned Additions
 
 Because this is meant to be for fun, a lot of the additions will include ridiculous commands meant to troll friends.
