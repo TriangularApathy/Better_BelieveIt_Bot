@@ -1,15 +1,43 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Better_BelieveIt_Bot {
     internal class Program {
-        private static DiscordSocketClient _client;
+        private static DiscordSocketClient _client = null!;
 
-        public static async Task Main() {
+        // Dependency injection
+        private static IServiceProvider _serviceProvider;
+
+
+        // Dependency injection
+        static IServiceProvider CreateProvider() {
+            var collection = new ServiceCollection();
+            //...
+            return collection.BuildServiceProvider();
+        }
+
+        static IServiceProvider CreateServices() {
+            var config = new DiscordSocketConfig() {
+                // MessageCacheSize = 100
+                //...
+            };
+
+            var collection = new ServiceCollection()
+                .AddSingleton(config)
+                .AddSingleton<DiscordSocketClient>();
+
+            return collection.BuildServiceProvider();
+        }
+
+        public static async Task Main(string[] args) {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<Program>();
             IConfigurationRoot configuration = configurationBuilder.Build();
+
+            // Dependency injection
+            _serviceProvider = CreateProvider();
 
             string token = configuration["BotToken"];
             if (string.IsNullOrWhiteSpace(token)) {
@@ -26,7 +54,6 @@ namespace Better_BelieveIt_Bot {
 
             // Events
             _client.Log += Log;
-            _client.MessageUpdated += MessageUpdated;
             _client.Ready += async () => {
                 string timestamp = await GetCurrentTimestamp();
                 Console.WriteLine($"[{timestamp}] Better-BelieveIt-Bot is connected and Ready, Believe it!");
@@ -48,11 +75,22 @@ namespace Better_BelieveIt_Bot {
             return timestamp;
         }
 
-        private static async Task MessageUpdated(Cacheable<IMessage, ulong> before, SocketMessage after, ISocketMessageChannel channel) {
+
+        // Needs privileged intent. Will just use slash commands instead
+        // _client.MessageUpdated += MessageUpdated; // (goes in Main)
+        /*
+         * private static async Task MessageUpdated(Cacheable<IMessage, ulong> before, SocketMessage after, ISocketMessageChannel channel) {
             // If the message was not in the cache, downloading it will result in getting a copy of `after`.
             var message = await before.GetOrDownloadAsync();
+
+            // Testing
+            Console.WriteLine($"before: {before}");
+            Console.WriteLine($"after: {after}");
+            Console.WriteLine($"channel: {channel}");
+
             string timestamp = await GetCurrentTimestamp();
             Console.WriteLine($"[{timestamp}] {message} -> {after}");
         }
+        */
     }
 }
