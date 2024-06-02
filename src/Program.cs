@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Discord.WebSocket;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
+using Discord.Rest;
 
 namespace Better_BelieveIt_Bot {
     internal class Program {
@@ -21,9 +22,10 @@ namespace Better_BelieveIt_Bot {
                 .ConfigureServices(services => {
                     // add all services here
                     services.AddSingleton<DiscordSocketClient>();
+                    services.AddSingleton<DiscordRestClient>();
                     services.AddSingleton<InteractionService>();
-                    services.AddSingleton<InteractionHandlingService>();
-                    services.AddSingleton<DiscordStartupService>();
+                    services.AddHostedService<InteractionHandlingService>();
+                    services.AddHostedService<DiscordStartupService>();
                 })
                 .Build();
             await host.RunAsync();
