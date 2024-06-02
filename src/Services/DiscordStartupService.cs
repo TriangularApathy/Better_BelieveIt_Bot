@@ -7,9 +7,9 @@ using Better_BelieveIt_Bot.Utility;
 
 namespace Better_BelieveIt_Bot.Services {
     internal class DiscordStartupService : IHostedService {
-        private readonly DiscordSocketClient _client = null!;
-        private readonly IConfiguration _config = null!;
-        private readonly ILogger<DiscordSocketClient> _logger = null!;
+        private readonly DiscordSocketClient _client;
+        private readonly IConfiguration _config;
+        private readonly ILogger<DiscordSocketClient> _logger;
 
         public DiscordStartupService(DiscordSocketClient client, IConfiguration config, ILogger<DiscordSocketClient> logger) {
             _client = client;

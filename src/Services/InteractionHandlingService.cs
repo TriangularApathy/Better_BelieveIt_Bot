@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Better_BelieveIt_Bot.Services {
     internal class InteractionHandlingService : IHostedService {
@@ -35,7 +36,7 @@ namespace Better_BelieveIt_Bot.Services {
             _client.Ready += () => _interaction.RegisterCommandsGloballyAsync(true);
             _client.InteractionCreated += OnInteractionAsync;
 
-            //await _interaction.AddModulesAsync(Assembly.GetEntryAssembly(), _servies);
+            await _interaction.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         public Task StopAsync(CancellationToken cancellationToken) {
