@@ -17,7 +17,7 @@ namespace Better_BelieveIt_Bot {
                 .ConfigureLogging(logging => {
                     logging.ClearProviders();
                     logging.AddConsole();
-                    logging.SetMinimumLevel(LogLevel.Debug);
+                    logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .ConfigureServices(services => {
                     // add all services here
