@@ -16,16 +16,34 @@ namespace Better_BelieveIt_Bot {
                 .ConfigureLogging(logging => {
                     logging.ClearProviders();
                     logging.AddConsole();
-                    logging.SetMinimumLevel(LogLevel.Debug);
+                    logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .ConfigureServices(services => {
                     // add all services here
-                    services.AddSingleton<DiscordSocketClient>();
-                    services.AddSingleton<InteractionService>();
-                    services.AddSingleton<InteractionHandlingService>();
-                    services.AddSingleton<DiscordStartupService>();
+                    Console.WriteLine("Configuring services...");
+                    try {                        
+                        services.AddSingleton<DiscordSocketClient>();
+                        Console.WriteLine("Successfully added [DiscordSocketClient]");
+                    }
+                    catch { Console.WriteLine("Failed to add [DiscordSocketClient]"); }
+                    try {                   
+                        services.AddSingleton<InteractionService>();
+                        Console.WriteLine("Successfully added [InteractionService]");
+                    }
+                    catch { Console.WriteLine("Failed to add [InteractionService]"); }
+                    try {
+                        services.AddSingleton<InteractionHandlingService>();
+                        Console.WriteLine("Successfully added [InteractionHandlingService]");
+                    }
+                    catch { Console.WriteLine("Failed to add [InteractionHandlingService]"); }
+                    try {
+                        services.AddSingleton<DiscordStartupService>();
+                        Console.WriteLine("Successfully added [DiscordStartupService]");
+                    }
+                    catch { Console.WriteLine("Failed to add [DiscordStartupService]"); }
                 })
                 .Build();
+            Console.WriteLine("Finished building host");
             await host.RunAsync();
         }
     }
