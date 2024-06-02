@@ -16,11 +16,6 @@ namespace Better_BelieveIt_Bot.Services {
             _config = config;
             _logger = logger;
 
-            Console.WriteLine("I made it to 'DiscordStartupService'");
-            Console.WriteLine($"Client: {_client}");
-            Console.WriteLine($"Config: {_config}");
-            Console.WriteLine($"Logger: {_logger}");
-
             _client.Log += message => LogHandler.OnLogAsync(_logger, message);
         }
 

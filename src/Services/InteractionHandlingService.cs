@@ -26,13 +26,10 @@ namespace Better_BelieveIt_Bot.Services {
             _config = config;
             _logger = logger;
 
-            Console.WriteLine("I made it into 'InteractionHandlingService'");
-
             _interaction.Log += message => LogHandler.OnLogAsync(_logger, message);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken) {
-            Console.WriteLine("I made it to 'StartAsync' in the 'InteractionHandlingService'");
             _client.Ready += () => _interaction.RegisterCommandsGloballyAsync(true);
             _client.InteractionCreated += OnInteractionAsync;
 
