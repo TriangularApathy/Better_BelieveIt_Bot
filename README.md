@@ -43,6 +43,9 @@ For development, the *Bot Token* is stored using the secret manager and accessed
 - `dotnet user-secrets init`
 - `dotnet user-secrets set "BotToken" "YourTokenHere"`
 
+[VS Code]
+- [VS Code User Secrets Package](https://marketplace.visualstudio.com/items?itemName=Reptarsrage.vscode-manage-user-secrets)
+
 After this, you should be able to build/run the project and have your bot active and ready in your server!
 ## Authors
 
