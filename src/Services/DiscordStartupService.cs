@@ -20,7 +20,6 @@ namespace Better_BelieveIt_Bot.Services {
         }
 
         public async Task StartAsync(CancellationToken cancellationToken) {
-            Console.WriteLine("I made it to 'StartAsync'");
             await _client.LoginAsync(TokenType.Bot, _config["BotToken"]);
             await _client.StartAsync();
         }
