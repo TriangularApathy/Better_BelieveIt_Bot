@@ -9,7 +9,9 @@ namespace Better_BelieveIt_Bot.Modules {
         }
 
         [SlashCommand("math_add", "Add two integers together.")]
-        public async Task MathAdd(int a, int b) {
+        public async Task MathAdd(
+            [Summary(description: "The first number to add")] int a,
+            [Summary(description: "The second number to add")] int b) {
             long c = a + b;
             await RespondAsync($"The sum of [{a}] and [{b}] is [{c}]");
         }
