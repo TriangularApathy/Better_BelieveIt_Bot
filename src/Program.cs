@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Discord.WebSocket;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
-using Discord.Rest;
+using Discord;
 
 namespace Better_BelieveIt_Bot {
     internal class Program {
@@ -17,13 +17,22 @@ namespace Better_BelieveIt_Bot {
                 .ConfigureLogging(logging => {
                     logging.ClearProviders();
                     logging.AddConsole();
-                    logging.SetMinimumLevel(LogLevel.Trace);
+                    logging.SetMinimumLevel(LogLevel.Information);
                 })
                 .ConfigureServices(services => {
                     // add all services here
-                    services.AddSingleton<DiscordSocketClient>();
-                    services.AddSingleton<DiscordRestClient>();
-                    services.AddSingleton<InteractionService>();
+                    services.AddSingleton(new DiscordSocketClient(
+                    new DiscordSocketConfig {
+                        GatewayIntents = GatewayIntents.AllUnprivileged,
+                        FormatUsersInBidirectionalUnicode = false,
+                        // Add GatewayIntents.GuildMembers to the GatewayIntents and change this to true if you want to download all users on startup
+                        AlwaysDownloadUsers = false,
+                        LogGatewayIntentWarnings = false,
+                        LogLevel = LogSeverity.Info
+                    }));
+                    services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>(), new InteractionServiceConfig() {
+                        LogLevel = LogSeverity.Info
+                    }));
                     services.AddHostedService<InteractionHandlingService>();
                     services.AddHostedService<DiscordStartupService>();
                 })

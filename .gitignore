@@ -3,6 +3,10 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# custom files
+grudges_active.json
+grudges_pending.json
+
 # dotenv files
 .env
 

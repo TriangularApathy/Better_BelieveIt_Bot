@@ -30,7 +30,14 @@ namespace Better_BelieveIt_Bot.Services {
         }
 
         public async Task StartAsync(CancellationToken cancellationToken) {
-            _client.Ready += () => _interaction.RegisterCommandsGloballyAsync(true);
+            // Commands can take up to an hour to register globally
+            //_client.Ready += () => _interaction.RegisterCommandsGloballyAsync(true);
+            var testGuildID = _config["TestGuildID"];
+            if (!ulong.TryParse(testGuildID, out ulong guildID)) {
+                Console.WriteLine("[FATAL ERROR]: Could not convert [TestGuildID] to ulong");
+                throw new Exception();
+            }
+            _client.Ready += () => _interaction.RegisterCommandsToGuildAsync(guildID, true);
             _client.InteractionCreated += OnInteractionAsync;
 
             await _interaction.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
