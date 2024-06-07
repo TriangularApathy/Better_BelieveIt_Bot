@@ -34,7 +34,7 @@ namespace Better_BelieveIt_Bot.Services {
             //_client.Ready += () => _interaction.RegisterCommandsGloballyAsync(true);
             var testGuildID = _config["TestGuildID"];
             if (!ulong.TryParse(testGuildID, out ulong guildID)) {
-                Console.WriteLine("Could not convery TestGuildID to ulong");
+                Console.WriteLine("[FATAL ERROR]: Could not convert [TestGuildID] to ulong");
                 throw new Exception();
             }
             _client.Ready += () => _interaction.RegisterCommandsToGuildAsync(guildID, true);
