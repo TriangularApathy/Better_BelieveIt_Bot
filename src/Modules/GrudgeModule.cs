@@ -1,6 +1,8 @@
-﻿using Discord;
+﻿using Better_BelieveIt_Bot.Utility;
+using Discord;
 using Discord.Interactions;
 using System.Text.Json;
+using static Better_BelieveIt_Bot.Modules.SuggestionModule;
 
 namespace Better_BelieveIt_Bot.Modules {
     public class Grudge {
@@ -38,6 +40,7 @@ namespace Better_BelieveIt_Bot.Modules {
             [Summary(description: "The action(s) that must take place in order to remove the grudge. ex: (Public apology)")] string terms) {
 
             ulong guildID = Context.Guild.Id;
+            string filePath = FilePathManager.FilePath;
             string submittedBy = Context.User.GlobalName;
             Grudge newGrudge = new() {
                 Title = title.ToUpper(),
@@ -52,35 +55,8 @@ namespace Better_BelieveIt_Bot.Modules {
                 GuildID = guildID
             };
 
-            // Check if the file exists and read data
-            string filePath = FilePathManager.FilePath;
-            if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
-            string? jsonContents = File.ReadAllText(filePath);
-
-            List<GrudgeWrapper> guilds;
-            if (!string.IsNullOrWhiteSpace(jsonContents)) { guilds = JsonSerializer.Deserialize<List<GrudgeWrapper>>(jsonContents) ?? new List<GrudgeWrapper>(); }
-            else { guilds = new List<GrudgeWrapper>(); }
-
-            bool guildExists = guilds.Any(guild => guild.GuildID == guildID);
-            if (guildExists) {
-                GrudgeWrapper currentGuild = guilds.First(guild => guild.GuildID == guildID);
-                currentGuild.Grudges.Add(newGrudge);
-            }
-            else {
-                GrudgeWrapper newGuild = new() {
-                    GuildID = guildID,
-                    Grudges = new List<Grudge> { newGrudge }
-                };
-
-                guilds.Add(newGuild);
-            }
-
-            // To-Do: catch errors within commands and send user basic reply, possibly with error (only if admin/testers?)
-
-            string grudgeData = JsonSerializer.Serialize(guilds, new JsonSerializerOptions() { WriteIndented = true });
-
-            await File.WriteAllTextAsync(filePath, grudgeData);
-            await RespondAsync("Thank you for submitting a Grudge. A Book-Holder will make a decision within the next century.");
+            await FileHandler.WriteJsonFile<Grudge>(guildID, filePath, newGrudge);
+            await RespondAsync($"Thanks {Context.User.Mention} for submitting a Grudge. A Book-Holder will make a decision within the next century.");
         }
 
         [SlashCommand("list", "Lists all confirmed Grudges.")]
@@ -136,17 +112,17 @@ namespace Better_BelieveIt_Bot.Modules {
         }
 
         /*
+          
+        [SlashCommand("confirm", "Allows a Book-Holder to confirm requested Grudges.")]
+        public async Task ConfirmSubcommand() {
+
+        }
 
         [SlashCommand("remove", "Allows a Book-Holder to remove Grudges.")]
         public async Task RemoveSubcommand() {
             // Remove only from current guild
         }
                 
-        [SlashCommand("confirm", "Allows a Book-Holder to confirm requested Grudges.")]
-        public async Task ConfirmSubcommand() {
-
-        }
-
         [SlashCommand("settle", "Allows a Book-Holder to mark Grudges as settled.")]
         public async Task SettleSubcommand() {
 
