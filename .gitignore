@@ -6,6 +6,7 @@
 # custom files
 grudges_active.json
 grudges_pending.json
+suggestions.json
 
 # dotenv files
 .env
