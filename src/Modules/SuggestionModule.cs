@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Interactions;
-using System.Text.Json;
 using Better_BelieveIt_Bot.Utility;
 
 namespace Better_BelieveIt_Bot.Modules {
