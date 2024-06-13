@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Interactions;
 using System.Text.Json;
-using static Better_BelieveIt_Bot.Modules.SuggestionModule;
 
 namespace Better_BelieveIt_Bot.Modules {
     public class Grudge {
@@ -111,12 +110,88 @@ namespace Better_BelieveIt_Bot.Modules {
             else { await RespondAsync($"For better or worse, no Grudges exist in {guildName}."); }
         }
 
-        /*
-          
         [SlashCommand("confirm", "Allows a Book-Holder to confirm requested Grudges.")]
         public async Task ConfirmSubcommand() {
+            string filePath = FilePathManager.FilePath;
+            string guildName = Context.Guild.Name;
+            string user = Context.User.GlobalName;
+            ulong guildID = Context.Guild.Id;
 
+            /* Format of message:
+             * Header? (current # out of total)
+             * Grudge title
+             * Grudge details
+             * Two buttons
+             *  approve
+             *  deny
+             * Footer with buttons?
+             *  next page
+             *  previous page
+            */
+
+            if (File.Exists(filePath)) {
+                string? jsonContents = File.ReadAllText(filePath);
+                List<GrudgeWrapper> guilds;
+                if (!string.IsNullOrWhiteSpace(jsonContents)) {
+                    var embed = new EmbedBuilder() {
+                        Color = 0x00AA00,
+                        Title = "Brian's Slopily Written List of Pending Grudges",
+                        Author = new EmbedAuthorBuilder()
+                            .WithName("Generic Human, Bookkeeper Brian")
+                            .WithIconUrl("https://www.deviantart.com/salrry/art/Young-man-medival-spanish-asthetic-II-953906723"),
+                        Description = $"",
+                        ThumbnailUrl = ""
+                    };
+
+                    var footer = new EmbedFooterBuilder()
+                        .WithText("Justice will be done")
+                        .WithIconUrl("https://lh4.googleusercontent.com/pNDr1pZZEPRNAIxpc71rlKdAN6pWg2mguNuGZ5AyTHRSdluDis261lYU1b5ghrmH82h6o-MEHF9GkxmhKLV78vsFCunXnsl9nqT5m3BEnbg50zJyU6xL7a76hdxZqiJxcACHYqcL");
+                    embed.Footer = footer;
+
+                    // Set up next section
+                    var field = new EmbedFieldBuilder()
+                        .WithName("LIST OF PENDING GRUDGES")
+                        .WithValue("\u200B");
+                    embed.AddField(field);
+
+                    var builder = new ComponentBuilder()
+                        .WithButton("APPROVE", "b_approve", ButtonStyle.Success)
+                        .WithButton("DENY", "b_deny", ButtonStyle.Danger);
+
+                    guilds = JsonSerializer.Deserialize<List<GrudgeWrapper>>(jsonContents) ?? new List<GrudgeWrapper>();
+                    GrudgeWrapper currentGuild = guilds.First(guild => guild.GuildID == guildID);
+                    foreach (Grudge grudge in currentGuild.Grudges) {
+                        string formatting = "";
+                        if (grudge.Status == "Settled") { formatting = "~~"; }
+                        else { formatting = "__"; }
+
+                        string tempMessage = $"* {formatting}Wronged: {grudge.Wronged}{formatting}\n* {formatting}Assailant(s): {grudge.Assailaints}{formatting}\n* {formatting}Wrongdoing: {grudge.Wrongdoing}{formatting}\n* {formatting}Date of Wrongdoing: {grudge.Date}{formatting}\n* {formatting}Terms of Settlement: {grudge.Terms}{formatting}\n* STATUS: **{grudge.Status}**";
+                        var newField = new EmbedFieldBuilder()
+                            .WithName(grudge.Title)
+                            .WithValue(tempMessage);
+                        embed.AddField(newField);
+                    }
+
+                    await RespondAsync($"Hear ye! Hear ye!\n\n **{user}** has called for the **`Almighty List of Grudges`** for the **`{guildName}`**. Behold!\n", embed: embed.Build());
+                }
+                else { await RespondAsync($"Thank you Book-Holder, but there are no Grudges pending approval in {guildName}."); }
+            }
+            else { await RespondAsync($"Thank you Book-Holder, but there are no Grudges pending approval in {guildName}."); }
+
+            /* Loop through each pending grudge
+             * on each record, show a brief detail of the grudge (show full details?)
+             * on each record, provide up to 3 buttons (confirm, deny, skip(?))
+             * confirm => grudge is moved to active grudge file
+             * deny => grudge is either removed, or removed and added to a denied list, or grudge stays on the pending list but status is changed to "Denied"
+             *  do denied grudges show up in the confirm list? or only grudges with status "pending"?
+             *  If they do show up, do we present buttons to alter it?
+             * This should only be used by 'book-holders'
+             *  Where to store these values?
+             *      user secrets would be easy, but how to get within module? Maybe with initionalization using a private field?
+            */
         }
+
+        /*
 
         [SlashCommand("remove", "Allows a Book-Holder to remove Grudges.")]
         public async Task RemoveSubcommand() {
